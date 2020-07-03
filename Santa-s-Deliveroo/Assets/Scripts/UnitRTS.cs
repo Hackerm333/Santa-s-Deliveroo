@@ -131,6 +131,17 @@ public class UnitRTS : MonoBehaviour, IOutlineable
 
     public void SetTargetPosition(Vector3 pos)
     {
+        destinations.Clear();
+        foreach (var line in _lineRendSpawned)
+        {
+            line.SetActive(false);
+        }
+
+        foreach (var ring in _ringSpawned)
+        {
+            ring.SetActive(false);
+        }
+
         _targetPosition = pos;
         SetPathLineRenderer(transform.position, _targetPosition);
         _moving = true;
