@@ -12000,11 +12000,11 @@ MonoBehaviour:
   - tag: RingPath
     prefab: {fileID: 5455570373551291653, guid: 65802588dd300924d8e13b1d3303af22,
       type: 3}
-    size: 5
+    size: 10
   - tag: PathLine
     prefab: {fileID: 2317397066799124398, guid: 5f2e3107b07fd9c4cbf881a0a8b3e515,
       type: 3}
-    size: 5
+    size: 10
 --- !u!4 &1549680438
 Transform:
   m_ObjectHideFlags: 0

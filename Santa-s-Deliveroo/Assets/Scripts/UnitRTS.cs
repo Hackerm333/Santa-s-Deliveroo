@@ -142,6 +142,8 @@ public class UnitRTS : MonoBehaviour, IOutlineable
             ring.SetActive(false);
         }
 
+        _lineRendSpawned.Clear();
+        _ringSpawned.Clear();
         _targetPosition = pos;
         SetPathLineRenderer(transform.position, _targetPosition);
         _moving = true;
