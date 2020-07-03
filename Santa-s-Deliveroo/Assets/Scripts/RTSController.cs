@@ -89,7 +89,7 @@ public class RTSController : Singleton<RTSController>
 
                 if (_selectedObj != null && _selectedObj != newSelectedObj)
                     _selectedObj.Selection.SetActive(false);
-                
+
                 if (HittedObj.CompareTag("UnitRTS"))
                 {
                     var selectedPlayer = HittedObj.GetComponent<UnitRTS>();
@@ -120,7 +120,8 @@ public class RTSController : Singleton<RTSController>
                 {
                     _selectedObj.ManageSelection();
                     _selectedObj = null;
-                    _currentUnit = null;
+                    if (_hittedObj == _currentUnit.gameObject)
+                        _currentUnit = null;
                     AudioManager.Instance.PlayAudio(AudioManager.Instance.deselection);
                 }
             }
