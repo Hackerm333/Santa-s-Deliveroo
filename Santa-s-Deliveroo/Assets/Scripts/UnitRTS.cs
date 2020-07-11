@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -67,17 +68,18 @@ public class UnitRTS : MonoBehaviour, IOutlineable
 
         else if (other.gameObject.CompareTag("House"))
         {
-            var triggeredHouse = other.gameObject.GetComponent<House>();
-            if (!triggeredHouse) return;
+            if (!other.gameObject.TryGetComponent(out House house))
+                return;
 
             for (var i = collectedItems.Count - 1; i >= 0; i--)
             {
                 var gift = collectedItems[i];
-                if (gift.AssignedHouse == triggeredHouse)
+                Debug.Log(gift);
+                if (gift.AssignedHouse == house)
                 {
                     onItemDelivered.Invoke();
                     collectedItems.Remove(gift);
-                    triggeredHouse.RemoveItem(gift);
+                    house.RemoveItem(gift);
                     Destroy(gift.gameObject);
                     speed += decreaseSpeed;
                     GameManager.Instance.UpdateItems();
@@ -108,7 +110,8 @@ public class UnitRTS : MonoBehaviour, IOutlineable
     {
         item.gameObject.transform.parent = collectedGiftParent;
         item.transform.localRotation = Quaternion.identity;
-        item.transform.localPosition = _lastCollectedItemPos + Vector3.up * 0.01f;
+        item.transform.localScale *= 2;
+        item.transform.localPosition = _lastCollectedItemPos + Vector3.up * 0.015f;
         _lastCollectedItemPos = item.transform.localPosition;
     }
 
@@ -135,11 +138,11 @@ public class UnitRTS : MonoBehaviour, IOutlineable
         _lineRendSpawned.Clear();
         _ringSpawned.Clear();
         _targetPosition = pos;
-        SetPathLineRenderer(transform.position, _targetPosition);
+        SetPath(transform.position, _targetPosition);
         _moving = true;
     }
 
-    private void SetPathLineRenderer(Vector3 startPos, Vector3 endPos)
+    private void SetPath(Vector3 startPos, Vector3 endPos)
     {
         pathLineRenderer.SetPosition(0, startPos);
         pathLineRenderer.SetPosition(1, endPos);
@@ -147,7 +150,8 @@ public class UnitRTS : MonoBehaviour, IOutlineable
             _currentRingTargetSpawned.SetActive(false);
 
         var ringSpawnPos = _targetPosition;
-        ringSpawnPos.y = 0.5f;
+        if (ringSpawnPos.y < 0.5f)
+            ringSpawnPos.y = 0.5f;
         _currentRingTargetSpawned =
             ObjectPooler.Instance.SpawnFromPool("RingPath", ringSpawnPos, Quaternion.Euler(RingRotation));
         _ringSpawned.Add(_currentRingTargetSpawned);
