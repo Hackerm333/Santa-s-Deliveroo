@@ -116,12 +116,17 @@ public class RTSController : Singleton<RTSController>
 
             else
             {
-                if (_selectedObj != null && HittedObj != null)
+                if (_selectedObj != null)
                 {
                     _selectedObj.ManageSelection();
                     _selectedObj = null;
-                    if (_hittedObj == _currentUnit.gameObject)
-                        _currentUnit = null;
+
+                    if (HittedObj != null)
+                    {
+                        if (_hittedObj == _currentUnit.gameObject)
+                            _currentUnit = null;
+                    }
+
                     AudioManager.Instance.PlayAudio(AudioManager.Instance.deselection);
                 }
             }

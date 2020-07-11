@@ -41,29 +41,37 @@ public class FlyCam : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
-            transform.position += transform.forward * (normalMoveSpeed * fastMoveFactor * Input.GetAxis("Vertical") * Time.deltaTime);
-            transform.position += transform.right * (normalMoveSpeed * fastMoveFactor * Input.GetAxis("Horizontal") * Time.deltaTime);
+            var position = transform.position;
+            position += transform.forward * (normalMoveSpeed * fastMoveFactor * Input.GetAxis("Vertical") * Time.deltaTime);
+            position += transform.right * (normalMoveSpeed * fastMoveFactor * Input.GetAxis("Horizontal") * Time.deltaTime);
+            transform.position = position;
         }
         else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
-            transform.position += transform.forward * (normalMoveSpeed * slowMoveFactor * Input.GetAxis("Vertical") * Time.deltaTime);
-            transform.position += transform.right * (normalMoveSpeed * slowMoveFactor * Input.GetAxis("Horizontal") * Time.deltaTime);
+            var position = transform.position;
+            position += transform.forward * (normalMoveSpeed * slowMoveFactor * Input.GetAxis("Vertical") * Time.deltaTime);
+            position += transform.right * (normalMoveSpeed * slowMoveFactor * Input.GetAxis("Horizontal") * Time.deltaTime);
+            transform.position = position;
         }
         else
         {
-            transform.position += transform.forward * (normalMoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime);
-            transform.position += transform.right * (normalMoveSpeed * Input.GetAxis("Horizontal") * Time.deltaTime);
+            var position = transform.position;
+            position += transform.forward * (normalMoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime);
+            position += transform.right * (normalMoveSpeed * Input.GetAxis("Horizontal") * Time.deltaTime);
+            transform.position = position;
         }
 
 
         if (Input.GetKey(KeyCode.E))
         {
-            transform.position += transform.up * (climbSpeed * Time.deltaTime);
+            var transform1 = transform;
+            transform1.position += transform1.up * (climbSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.Q))
         {
-            transform.position -= transform.up * (climbSpeed * Time.deltaTime);
+            var transform1 = transform;
+            transform1.position -= transform1.up * (climbSpeed * Time.deltaTime);
         }
 
         #if UNITY_EDITOR

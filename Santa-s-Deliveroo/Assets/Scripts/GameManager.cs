@@ -17,7 +17,6 @@ public class GameManager : Singleton<GameManager>
 
     private List<GameObject> _instancedSystemPrefabs;
     private List<AsyncOperation> _loadOperations = new List<AsyncOperation>();
-    private GameState _currentGameState = GameState.Pregame;
 
     private string _currentLevelName = string.Empty;
 
@@ -29,11 +28,7 @@ public class GameManager : Singleton<GameManager>
 
     private UnitRTS _lastUnitCaptured;
 
-    public GameState currentGameState
-    {
-        get => _currentGameState;
-        private set { _currentGameState = value; }
-    }
+    public GameState currentGameState { get; private set; } = GameState.Pregame;
 
     public int MinItemsToDeliver => minItemsToDeliver;
 
@@ -113,10 +108,10 @@ public class GameManager : Singleton<GameManager>
 
     private void UpdateState(GameState state)
     {
-        var previousGameState = _currentGameState;
-        _currentGameState = state;
+        var previousGameState = currentGameState;
+        currentGameState = state;
 
-        switch (_currentGameState)
+        switch (currentGameState)
         {
             case GameState.Pregame:
                 Time.timeScale = 1.0f;
@@ -131,30 +126,30 @@ public class GameManager : Singleton<GameManager>
             case GameState.Paused:
                 Time.timeScale = 0.0f;
                 break;
-            
+
             case GameState.EndGame:
                 UpdateState(GameState.Paused);
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
                 break;
         }
 
-        onGameStateChanged.Invoke(_currentGameState, previousGameState);
+        onGameStateChanged.Invoke(currentGameState, previousGameState);
         Debug.LogWarning("GameState changed to " + currentGameState);
     }
 
     private void InstantiateSystemPrefabs()
     {
         GameObject prefabInstance;
-        for (int i = 0; i < systemPrefabs.Length; i++)
+        foreach (var t in systemPrefabs)
         {
-            prefabInstance = Instantiate(systemPrefabs[i]);
+            prefabInstance = Instantiate(t);
             _instancedSystemPrefabs.Add(prefabInstance);
         }
     }
 
     public void LoadLevel(string levelName)
     {
-        AsyncOperation ao = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
+        var ao = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
         if (ao == null)
         {
             Debug.LogError("[GameManager] Unable to load level " + levelName);
@@ -167,7 +162,7 @@ public class GameManager : Singleton<GameManager>
 
     public void UnloadLevel(string levelName)
     {
-        AsyncOperation ao = SceneManager.UnloadSceneAsync(levelName);
+        var ao = SceneManager.UnloadSceneAsync(levelName);
         if (ao == null)
         {
             Debug.LogError("[GameManager] Unable to unload level " + levelName);
@@ -182,22 +177,14 @@ public class GameManager : Singleton<GameManager>
         base.OnDestroy();
 
         for (int i = 0; i < _instancedSystemPrefabs.Count; ++i)
-        {
             Destroy(_instancedSystemPrefabs[i]);
-        }
 
         _instancedSystemPrefabs.Clear();
     }
 
-    public void StartGame()
-    {
-        LoadLevel("Main");
-    }
+    public void StartGame() => LoadLevel("Main");
 
-    public void TogglePause()
-    {
-        UpdateState(_currentGameState == GameState.Running ? GameState.Paused : GameState.Running);
-    }
+    public void TogglePause() => UpdateState(currentGameState == GameState.Running ? GameState.Paused : GameState.Running);
 
     public void RestartGame()
     {

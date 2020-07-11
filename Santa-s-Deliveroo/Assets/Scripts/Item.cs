@@ -8,20 +8,11 @@ public class Item : MonoBehaviour, IOutlineable
     private bool _collected;
     public House AssignedHouse => assignedHouse;
 
-    public void OnMouseEnter()
-    {
-        GameManager.Instance.UpdateCursor(false);
-    }
+    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false); 
 
-    public void OnMouseExit()
-    {
-        GameManager.Instance.UpdateCursor(true);
-    }
+    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true); 
 
-    public GameObject Selection
-    {
-        get { return selection; }
-    }
+    public GameObject Selection => selection;
 
     private void OnTriggerEnter(Collider other)
     {

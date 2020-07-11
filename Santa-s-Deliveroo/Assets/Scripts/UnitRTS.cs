@@ -12,7 +12,6 @@ public class UnitRTS : MonoBehaviour, IOutlineable
     private bool _moving;
 
     [SerializeField] private float rotSpeed = 5f;
-    private Vector3 _targetPosition = Vector3.zero;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float decreaseSpeed = 0.25f;
     private readonly float _accuracyWp = 0.2f;
@@ -22,18 +21,15 @@ public class UnitRTS : MonoBehaviour, IOutlineable
 
     [SerializeField] private List<Vector3> destinations;
     [SerializeField] private GameObject selection;
-
-    private Vector3 _direction;
-    private Vector3 _lastCollectedItemPos;
-
     [SerializeField] private LineRenderer pathLineRenderer;
 
+    private Vector3 _targetPosition = Vector3.zero;
+    private Vector3 _direction;
+    private Vector3 _lastCollectedItemPos;
+    private Vector3 _lastDestination;
     private Quaternion _defaultRingRotation;
     private int _lastPathLineRendererIndex;
     private GameObject _currentRingTargetSpawned;
-
-    private Vector3 _lastDestination;
-
     private static readonly Vector3 RingRotation = new Vector3(90, 0, 0);
     private List<GameObject> _ringSpawned = new List<GameObject>();
     private List<GameObject> _lineRendSpawned = new List<GameObject>();
@@ -51,16 +47,17 @@ public class UnitRTS : MonoBehaviour, IOutlineable
 
     private void OnTriggerEnter(Collider other)
     {
-        var item = other.gameObject.GetComponent<Item>();
         if (other.gameObject.CompareTag("Item"))
         {
+            var item = other.gameObject.GetComponent<Item>();
+            if (!item) return;
+
             if (collectedItems.Count >= collectedItems.Capacity)
             {
                 AudioManager.Instance.PlayAudio(AudioManager.Instance.cantPickItem);
                 return;
             }
 
-            if (!item) return;
             collectedItems.Add(item);
             other.gameObject.SetActive(false);
             AddItem(item);
@@ -72,6 +69,7 @@ public class UnitRTS : MonoBehaviour, IOutlineable
         {
             var triggeredHouse = other.gameObject.GetComponent<House>();
             if (!triggeredHouse) return;
+
             for (var i = collectedItems.Count - 1; i >= 0; i--)
             {
                 var gift = collectedItems[i];
@@ -96,14 +94,10 @@ public class UnitRTS : MonoBehaviour, IOutlineable
             AudioManager.Instance.PlayAudio(AudioManager.Instance.unitCapturedClip);
             GameStats.Instance.UpdateGameStatsUi();
             foreach (var line in _lineRendSpawned)
-            {
                 line.SetActive(false);
-            }
 
             foreach (var rig in _ringSpawned)
-            {
                 rig.SetActive(false);
-            }
 
             this.enabled = false;
             Destroy(gameObject);
@@ -133,14 +127,10 @@ public class UnitRTS : MonoBehaviour, IOutlineable
     {
         destinations.Clear();
         foreach (var line in _lineRendSpawned)
-        {
             line.SetActive(false);
-        }
 
         foreach (var ring in _ringSpawned)
-        {
             ring.SetActive(false);
-        }
 
         _lineRendSpawned.Clear();
         _ringSpawned.Clear();
@@ -178,14 +168,10 @@ public class UnitRTS : MonoBehaviour, IOutlineable
             destinations.Remove(_targetPosition);
 
             if (destinations.Count > 0)
-            {
                 _targetPosition = destinations[0];
-            }
 
             else
-            {
                 _moving = false;
-            }
 
             transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
 
@@ -211,23 +197,15 @@ public class UnitRTS : MonoBehaviour, IOutlineable
         }
     }
 
-    public void OnMouseEnter()
-    {
-        GameManager.Instance.UpdateCursor(false);
-    }
+    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false);
 
-    public void OnMouseExit()
-    {
-        GameManager.Instance.UpdateCursor(true);
-    }
+    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true);
 
-    public GameObject Selection
-    {
-        get { return selection; }
-    }
+    public GameObject Selection => selection;
 
     public void AddWaypoint(Vector3 destination)
     {
+        if (!_moving) return;
         var pathLine = ObjectPooler.Instance.SpawnFromPool("PathLine", _targetPosition, Quaternion.identity);
         pathLine.GetComponent<LineRenderer>().material = RTSController.Instance.WaypointPathMaterial;
         _lineRendSpawned.Add(pathLine);
@@ -254,11 +232,9 @@ public class UnitRTS : MonoBehaviour, IOutlineable
     {
         selection.SetActive(!selection.activeInHierarchy);
 
-        if (collectedItems.Count > 0)
-        {
-            foreach (var item in collectedItems)
-                item.gameObject.SetActive(selection.activeInHierarchy);
-        }
+        if (collectedItems.Count <= 0) return;
+        foreach (var item in collectedItems)
+            item.gameObject.SetActive(selection.activeInHierarchy);
     }
 
     private void RotateTowardsTarget()

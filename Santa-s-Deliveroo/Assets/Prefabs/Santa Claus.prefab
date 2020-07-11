@@ -530,11 +530,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76e3c58986819594cbfb5a9b5992eef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectedItems: []
   collectedGiftParent: {fileID: 1797033144}
   rotSpeed: 3
   speed: 30
-  decreaseSpeed: 0.25
+  decreaseSpeed: 1
   onItemDelivered:
     m_PersistentCalls:
       m_Calls: []
@@ -544,8 +543,6 @@ MonoBehaviour:
   destinations: []
   selection: {fileID: 1392886832029778}
   pathLineRenderer: {fileID: 1857617147}
-  _ringSpawned: []
-  _lineRendSpawned: []
 --- !u!1 &6018237650011407819
 GameObject:
   m_ObjectHideFlags: 0

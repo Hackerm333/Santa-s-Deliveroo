@@ -48,8 +48,6 @@ public class Enemy : MonoBehaviour
                         _currentEnemyState = EnemyState.Chase;
                         transform.LookAt(_chasedTarget.transform);
                         _destination = _chasedTarget.transform.position;
-                        Debug.LogFormat("<color=orange>" + gameObject.name + " IS CHASING " +
-                                        _chasedTarget.gameObject.name + "</color>");
                         break;
                     }
                 }
@@ -72,7 +70,6 @@ public class Enemy : MonoBehaviour
         {
             if (Vector3.Distance(transform.position, _chasedTarget.transform.position) > detectionRange)
             {
-                Debug.LogFormat("<color=green>" + gameObject.name + " HAS STOPPED CHASING " + "</color>");
                 _currentEnemyState = EnemyState.Patrol;
                 _chasedTarget = null;
                 return;

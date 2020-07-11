@@ -15,31 +15,19 @@ public class House : MonoBehaviour, IOutlineable
         {
             associatedItems.Clear();
             gameObject.layer = 0;
-            Debug.LogFormat("<color=red> You completed this house! </color>");
         }
     }
 
-    public void OnMouseEnter()
-    {
-        GameManager.Instance.UpdateCursor(false);
-    }
+    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false); 
 
-    public void OnMouseExit()
-    {
-        GameManager.Instance.UpdateCursor(true);
-    }
+    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true); 
 
-    public GameObject Selection
-    {
-        get { return selection; }
-    }
+    public GameObject Selection => selection;
 
     public void ManageSelection()
     {
         selection.SetActive(!selection.activeInHierarchy);
         foreach (var item in associatedItems)
-        {
             item.Selection.SetActive(selection.activeInHierarchy);
-        }
     }
 }
