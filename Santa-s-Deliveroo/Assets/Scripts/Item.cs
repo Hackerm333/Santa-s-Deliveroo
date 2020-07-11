@@ -20,7 +20,7 @@ public class Item : MonoBehaviour, IOutlineable
             _collected = true;
     }
 
-    public void ManageSelection()
+    public void ManageOutlineEffect()
     {
         selection.SetActive(!selection.activeInHierarchy);
         assignedHouse.Selection.SetActive(selection.activeSelf);

@@ -5,8 +5,7 @@ public class RTSController : Singleton<RTSController>
 {
     private UnitRTS _currentUnit;
     private bool _isTacticalView;
-    private IOutlineable _selectedObj;
-    private GameObject _hittedObj;
+    private IOutlineable _currentSelectedObj;
 
     [Header("Cameras")] [SerializeField] private Camera rtsCamera;
     [SerializeField] private FlyCam flyCamera;
@@ -17,10 +16,6 @@ public class RTSController : Singleton<RTSController>
     public List<UnitRTS> AvailableUnits => availableUnits;
 
     public Material WaypointPathMaterial => waypointPathMaterial;
-
-    public UnitRTS CurrentUnit => _currentUnit;
-
-    public GameObject HittedObj => _hittedObj;
 
     [SerializeField] private Material waypointPathMaterial;
 
@@ -78,58 +73,53 @@ public class RTSController : Singleton<RTSController>
 
         if (Input.GetMouseButtonDown(0))
         {
+            #region SELECTION
+
+            // Check if the ray hits an object in the proper layer
             if (Physics.Raycast(rtsCamera.ScreenPointToRay(Input.mousePosition), out var rayHit, 1000,
                 GameManager.Instance.SelectionLayer))
             {
-                _hittedObj = rayHit.collider.gameObject;
+                // Check if the object has a component which implements the IOutlineable interface
+                // which is needed for selection/deselection
+                if (!rayHit.collider.gameObject.TryGetComponent(out IOutlineable outlineableHit))
+                    return;
 
-                var newSelectedObj = HittedObj.GetComponent<IOutlineable>();
-
-                _selectedObj = HittedObj.GetComponent<IOutlineable>();
-
-                if (_selectedObj != null && _selectedObj != newSelectedObj)
-                    _selectedObj.Selection.SetActive(false);
-
-                if (HittedObj.CompareTag("UnitRTS"))
+                // Check if we previously selected an object
+                if (_currentSelectedObj != null)
                 {
-                    var selectedPlayer = HittedObj.GetComponent<UnitRTS>();
-                    if (selectedPlayer != null && CurrentUnit != selectedPlayer)
-                        _currentUnit = selectedPlayer;
-
-                    else
-                        _currentUnit = null;
-                }
-
-                if (_selectedObj != null)
-                {
-                    OutlineEffect(_selectedObj);
-
-                    if (_selectedObj.Selection.activeInHierarchy)
-                        AudioManager.Instance.PlayAudio(AudioManager.Instance.selectionClip);
-                    else
+                    SetOutlineEffect(_currentSelectedObj);
+                    if (outlineableHit == _currentSelectedObj)
                     {
-                        AudioManager.Instance.PlayAudio(AudioManager.Instance.deselection);
-                        _selectedObj = null;
+                        Deselect();
+                        return;
                     }
                 }
+
+                var objHit = rayHit.collider.gameObject;
+                _currentSelectedObj = outlineableHit;
+
+                if (objHit.CompareTag("UnitRTS") && objHit.TryGetComponent(out UnitRTS unitHit))
+                    _currentUnit = unitHit;
+
+                SetOutlineEffect(_currentSelectedObj);
+
+                AudioManager.Instance.PlayAudio(_currentSelectedObj.Selection.activeInHierarchy
+                    ? AudioManager.Instance.selectionClip
+                    : AudioManager.Instance.deselection);
             }
 
+            #endregion
+
+            #region DESELECTION
+
+            // We clicked on a non selectable object
             else
             {
-                if (_selectedObj != null)
-                {
-                    _selectedObj.ManageSelection();
-                    _selectedObj = null;
-
-                    if (HittedObj != null)
-                    {
-                        if (_hittedObj == _currentUnit.gameObject)
-                            _currentUnit = null;
-                    }
-
-                    AudioManager.Instance.PlayAudio(AudioManager.Instance.deselection);
-                }
+                _currentSelectedObj?.ManageOutlineEffect();
+                Deselect();
             }
+
+            #endregion
         }
 
         else if (Input.GetKey(KeyCode.LeftControl))
@@ -137,33 +127,37 @@ public class RTSController : Singleton<RTSController>
             if (Input.GetMouseButtonUp(1))
             {
                 if (Physics.Raycast(rtsCamera.ScreenPointToRay(Input.mousePosition), out var rayHit, 1000))
-                    CurrentUnit.AddWaypoint(rayHit.point);
+                    _currentUnit.AddWaypoint(rayHit.point);
             }
         }
 
         else if (Input.GetMouseButtonDown(1))
         {
-            if (!CurrentUnit) return; // Check if a player unit is selected 
+            if (!_currentUnit) return; // Check if a player unit is selected 
 
             if (Physics.Raycast(rtsCamera.ScreenPointToRay(Input.mousePosition), out var rayHit, 1000))
-                CurrentUnit.SetTargetPosition(rayHit.point);
+                _currentUnit.SetTargetPosition(rayHit.point);
 
             AudioManager.Instance.PlayAudio(AudioManager.Instance.newDestination);
         }
     }
 
-    private static void OutlineEffect(IOutlineable go)
+    private void Deselect()
     {
-        go.ManageSelection();
+        _currentSelectedObj = null;
+        _currentUnit = null;
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.deselection);
+    }
+
+    private static void SetOutlineEffect(IOutlineable go)
+    {
+        go.ManageOutlineEffect();
     }
 
     private void ManageView()
     {
         if (!flyCamera || !rtsCamera)
-        {
-            Debug.LogWarning("You have to assign flyCamera or rtsCamera in the inspector");
             return;
-        }
 
         _isTacticalView = !_isTacticalView;
 
@@ -178,7 +172,6 @@ public class RTSController : Singleton<RTSController>
             _currentUnit = null;
 
         AvailableUnits.Remove(unit);
-        Debug.Log("<color=red>" + "You loose a unit!" + "</color>");
 
         if (AvailableUnits.Count <= 0)
             GameManager.Instance.GameOver();

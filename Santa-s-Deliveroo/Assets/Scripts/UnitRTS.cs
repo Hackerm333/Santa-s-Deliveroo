@@ -228,7 +228,7 @@ public class UnitRTS : MonoBehaviour, IOutlineable
         _ringSpawned.Add(ring);
     }
 
-    public void ManageSelection()
+    public void ManageOutlineEffect()
     {
         selection.SetActive(!selection.activeInHierarchy);
 

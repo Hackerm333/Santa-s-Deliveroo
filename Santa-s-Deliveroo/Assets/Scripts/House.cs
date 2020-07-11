@@ -24,7 +24,7 @@ public class House : MonoBehaviour, IOutlineable
 
     public GameObject Selection => selection;
 
-    public void ManageSelection()
+    public void ManageOutlineEffect()
     {
         selection.SetActive(!selection.activeInHierarchy);
         foreach (var item in associatedItems)
