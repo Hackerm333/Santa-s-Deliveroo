@@ -15,12 +15,15 @@ public class House : MonoBehaviour, IOutlineable
         {
             associatedItems.Clear();
             gameObject.layer = 0;
+            if (TryGetComponent(out BoxCollider boxCollider))
+                Destroy(boxCollider);
+            Destroy(this);
         }
     }
 
-    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false); 
+    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false);
 
-    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true); 
+    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true);
 
     public GameObject Selection => selection;
 

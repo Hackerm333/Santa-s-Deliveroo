@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour
     private Vector3 _destination;
     private UnitRTS _chasedTarget;
 
+    private float sqrDetectionRange;
+
     public enum EnemyState
     {
         Patrol,
@@ -26,6 +28,7 @@ public class Enemy : MonoBehaviour
     {
         _randomSpots = Random.Range(0, moveSpots.Length);
         _destination = moveSpots[_randomSpots].position;
+        sqrDetectionRange = detectionRange * detectionRange;
     }
 
     private void Update()
@@ -37,7 +40,7 @@ public class Enemy : MonoBehaviour
         {
             foreach (var unitRts in RTSController.Instance.AvailableUnits)
             {
-                if (Vector3.Distance(transform.position, unitRts.transform.position) <= detectionRange)
+                if(Vector3.SqrMagnitude(transform.position - unitRts.transform.position) <= sqrDetectionRange)
                 {
                     var targetDir = unitRts.transform.position - transform.position;
                     var angle = Vector3.Angle(targetDir, transform.forward);

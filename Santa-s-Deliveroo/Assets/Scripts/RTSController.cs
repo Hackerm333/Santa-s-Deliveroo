@@ -4,7 +4,7 @@ using UnityEngine;
 public class RTSController : Singleton<RTSController>
 {
     private UnitRTS _currentUnit;
-    private IOutlineable _currentSelectedObj;
+    private IOutlineable _currentSelected;
 
     [Header("Cameras")] [SerializeField] private Camera rtsCamera;
     [SerializeField] private FlyCam flyCamera;
@@ -79,10 +79,10 @@ public class RTSController : Singleton<RTSController>
                     return;
 
                 // Check if we previously selected an object
-                if (_currentSelectedObj != null)
+                if (_currentSelected != null)
                 {
-                    SetOutlineEffect(_currentSelectedObj);
-                    if (outlineableHit == _currentSelectedObj)
+                    SetOutlineEffect(_currentSelected);
+                    if (outlineableHit == _currentSelected)
                     {
                         Deselect();
                         return;
@@ -90,23 +90,27 @@ public class RTSController : Singleton<RTSController>
                 }
 
                 var objHit = rayHit.collider.gameObject;
-                _currentSelectedObj = outlineableHit;
+                _currentSelected = outlineableHit;
 
                 if (objHit.CompareTag("UnitRTS") && objHit.TryGetComponent(out UnitRTS unitHit))
                     _currentUnit = unitHit;
 
-                SetOutlineEffect(_currentSelectedObj);
+                else
+                    _currentUnit = null;
 
-                AudioManager.Instance.PlayAudio(_currentSelectedObj.Selection.activeInHierarchy
+                SetOutlineEffect(_currentSelected);
+
+                AudioManager.Instance.PlayAudio(_currentSelected.Selection.activeInHierarchy
                     ? AudioManager.Instance.selectionClip
                     : AudioManager.Instance.deselection);
             }
 
             else
             {
-                if (_currentSelectedObj == null) return;
-                _currentSelectedObj?.ManageOutlineEffect();
+                if (_currentSelected == null) return;
+                _currentSelected?.ManageOutlineEffect();
                 Deselect();
+                _currentUnit = null;
             }
 
             #endregion
@@ -132,12 +136,12 @@ public class RTSController : Singleton<RTSController>
 
     private void Deselect()
     {
-        _currentSelectedObj = null;
+        _currentSelected = null;
         _currentUnit = null;
         AudioManager.Instance.PlayAudio(AudioManager.Instance.deselection);
     }
 
-    private static void SetOutlineEffect(IOutlineable go) => go.ManageOutlineEffect(); 
+    private static void SetOutlineEffect(IOutlineable go) => go.ManageOutlineEffect();
 
     private void ManageView()
     {
@@ -154,6 +158,9 @@ public class RTSController : Singleton<RTSController>
     {
         if (unit == _currentUnit)
             _currentUnit = null;
+
+        if ((IOutlineable) unit == _currentSelected)
+            _currentSelected = null;
 
         AvailableUnits.Remove(unit);
 

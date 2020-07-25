@@ -277,6 +277,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Santa Claus (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6018234866337433811, guid: dfffdf1448da89f478ae300ab5b8ce2c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6021233214757244689, guid: dfffdf1448da89f478ae300ab5b8ce2c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -437,6 +442,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Santa Claus (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6018234866337433811, guid: dfffdf1448da89f478ae300ab5b8ce2c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6021233214757244689, guid: dfffdf1448da89f478ae300ab5b8ce2c,
         type: 3}
@@ -1744,6 +1754,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 524229207}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &524229209 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1107654255, guid: 3cde6b8d4b8f4c946857c4628c10d665,
+    type: 3}
+  m_PrefabInstance: {fileID: 524229207}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f797f914e06b3b46bb2427fb2f69c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &524229210 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3282961829406293182, guid: 3cde6b8d4b8f4c946857c4628c10d665,
@@ -1866,6 +1888,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 569590148}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &569590150 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1107654255, guid: 3cde6b8d4b8f4c946857c4628c10d665,
+    type: 3}
+  m_PrefabInstance: {fileID: 569590148}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f797f914e06b3b46bb2427fb2f69c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &569590151 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3282961829406293182, guid: 3cde6b8d4b8f4c946857c4628c10d665,
@@ -1968,6 +2002,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Santa Claus (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6018234866337433811, guid: dfffdf1448da89f478ae300ab5b8ce2c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6021233214757244689, guid: dfffdf1448da89f478ae300ab5b8ce2c,
         type: 3}
@@ -5100,6 +5139,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Santa Claus (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6018234866337433811, guid: dfffdf1448da89f478ae300ab5b8ce2c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6021233214757244689, guid: dfffdf1448da89f478ae300ab5b8ce2c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6996,18 +7040,18 @@ PrefabInstance:
     - target: {fileID: 1807290646981911834, guid: 1bd64b6d4fba82f4891390f868c74d6e,
         type: 3}
       propertyPath: associatedItems.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1807290646981911834, guid: 1bd64b6d4fba82f4891390f868c74d6e,
         type: 3}
       propertyPath: associatedItems.Array.data[0]
       value: 
-      objectReference: {fileID: 505643100}
+      objectReference: {fileID: 524229209}
     - target: {fileID: 1807290646981911834, guid: 1bd64b6d4fba82f4891390f868c74d6e,
         type: 3}
       propertyPath: associatedItems.Array.data[1]
       value: 
-      objectReference: {fileID: 854739613}
+      objectReference: {fileID: 569590150}
     - target: {fileID: 1807290646981911834, guid: 1bd64b6d4fba82f4891390f868c74d6e,
         type: 3}
       propertyPath: associatedItems.Array.data[2]

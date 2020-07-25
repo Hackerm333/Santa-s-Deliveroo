@@ -8,9 +8,9 @@ public class Item : MonoBehaviour, IOutlineable
     private bool _collected;
     public House AssignedHouse => assignedHouse;
 
-    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false); 
+    public void OnMouseEnter() => GameManager.Instance.UpdateCursor(false);
 
-    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true); 
+    public void OnMouseExit() => GameManager.Instance.UpdateCursor(true);
 
     public GameObject Selection => selection;
 
@@ -22,9 +22,9 @@ public class Item : MonoBehaviour, IOutlineable
 
     public void ManageOutlineEffect()
     {
-        selection.SetActive(!selection.activeInHierarchy);
+        selection.SetActive(!selection.activeSelf);
         assignedHouse.Selection.SetActive(selection.activeSelf);
-        
+
         if (_collected && !selection.activeInHierarchy)
             gameObject.SetActive(false);
     }

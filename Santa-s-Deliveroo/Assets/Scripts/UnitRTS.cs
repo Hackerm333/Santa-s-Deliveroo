@@ -74,12 +74,13 @@ public class UnitRTS : MonoBehaviour, IOutlineable
             for (var i = collectedItems.Count - 1; i >= 0; i--)
             {
                 var gift = collectedItems[i];
-                Debug.Log(gift);
                 if (gift.AssignedHouse == house)
                 {
                     onItemDelivered.Invoke();
                     collectedItems.Remove(gift);
                     house.RemoveItem(gift);
+                    gift.ManageOutlineEffect();
+                    gift.AssignedHouse.ManageOutlineEffect();
                     Destroy(gift.gameObject);
                     speed += decreaseSpeed;
                     GameManager.Instance.UpdateItems();
